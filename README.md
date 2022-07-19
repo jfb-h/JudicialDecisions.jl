@@ -43,7 +43,7 @@ The package contains a series of statistical model implementations for modeling 
 One of the simplest models is a Binomial model for the probability that a given senate will anull a patent (i.e., cross-senate variation):
 
 $$
-y_s \sim \textrm{Binomial}(n_s, p_s), \textrm{for} i=1, \ldots, S
+y_s \sim \textrm{Binomial}(n_s, p_s), \text{ for } i=1, \ldots, S
 $$
 
 where $S$ refers to the total number of senates.

@@ -9,7 +9,7 @@ This package currently has two purposes (which might be refactored into separate
 `JudicialDecisions.loaddata(BPatG(), dir)` parses files in `dir`, which are expected to be `.jsonl` representations
 of decisisons made by the German federal patent court, into an array with elements of type `Decision`:
 
-```julia-repl
+```julia
 julia> decisions = JudicialDecisions.loaddata(BPatG(), "../data/json")
 1565-element Vector{Decision}:
  1 Ni 4/99 (EU)
@@ -23,7 +23,7 @@ julia> decisions = JudicialDecisions.loaddata(BPatG(), "../data/json")
 
 Printing out a single decision showcases its metadata:
 
-```julia-repl
+```julia
 julia> decisions[1]
 Ruling 1 Ni 4/99 (EU) on EP0389008
 Date of decision: 26 September, 2000

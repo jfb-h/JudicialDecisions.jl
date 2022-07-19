@@ -34,7 +34,7 @@ _post(x::DynamicHMCPosterior) = getfield(x, :post)
 
 paramnames(x::DynamicHMCPosterior) = keys(first(_post(x)))
 
-length(x::DynamicHMCPosterior) = length(_post(x))
+Base.length(x::DynamicHMCPosterior) = length(_post(x))
 Base.getindex(x::DynamicHMCPosterior, key) = getindex(_post(x), key)
 Base.getproperty(x::DynamicHMCPosterior, f::Symbol) = getproperty(_post(x), f)
 
@@ -44,7 +44,7 @@ Base.iterate(x::DynamicHMCPosterior, state) = iterate(_post(x), state)
 function Base.show(io::IO, ::MIME"text/plain", p::DynamicHMCPosterior)
     #compact = get(io, :compact, false)
     params = paramnames(p)
-    print(io, "DynamicHMCPosterior with $(length(p)) samples and parameters $params.")
+    print(io, "DynamicHMCPosterior with $(length(p)) samples and parameters $params")
 end
 
 

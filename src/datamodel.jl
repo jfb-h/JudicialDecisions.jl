@@ -79,15 +79,11 @@ senate(x::Decision) = x.senate
 judges(x::Decision) = x.judges
 date(x::Decision) = x.date
 
-function Base.show(io::IO, ::MIME"text/plain", d::Decision)
-    compact = get(io, :compact, false)
+Base.show(io::IO, d::Decision) = print(io, label(d))
 
-    if compact
-        print(io, label(d))
-    else
-        println(io, "Ruling $(label(d)) on $(patent(d))")
-        println(io, "Date of decision: $(format(date(d), "d U, Y"))")
-        println(io, "Decided by: $(label(senate(d))) ($(join(label.(judges(d)), ", ")))")
-        println(io, "Outcome: $(label(outcome(d)))")
-    end
+function Base.show(io::IO, ::MIME"text/plain", d::Decision)
+    println(io, "Ruling $(label(d)) on $(patent(d))")
+    println(io, "Date of decision: $(format(date(d), "d U, Y"))")
+    println(io, "Decided by: $(label(senate(d))) ($(join(label.(judges(d)), ", ")))")
+    println(io, "Outcome: $(label(outcome(d)))")
 end

@@ -4,20 +4,20 @@
 
 Simple binomial model predicting the probability of annullment by senate.
 """
-struct SenateModelPosterior{T}
+struct BinomialSenateModel{T}
     ys::Vector{Int}
     ns::Vector{Int}
     senate::Vector{T}
 end
 
-function SenateModelPosterior(decisions::Vector{Decision})
+function BinomialSenateModel(decisions::Vector{Decision})
     gr = group(id ∘ senate, id ∘ outcome, decisions)
     ys = map(sum, gr) |> sortkeys
     ns = map(length, gr) |> sortkeys
-    SenateModelPosterior(collect(ys), collect(ns), collect(keys(ns)))
+    BinomialSenateModel(collect(ys), collect(ns), collect(keys(ns)))
 end
 
-function (problem::SenateModelPosterior)(θ)
+function (problem::BinomialSenateModel)(θ)
     @unpack ps = θ
     @unpack ys, ns, senate = problem
 
@@ -27,4 +27,4 @@ function (problem::SenateModelPosterior)(θ)
     loglik + logpri
 end
 
-transformation(problem::SenateModelPosterior) = as((ps=as(Array, as𝕀, length(problem.senate)),))
+transformation(problem::BinomialSenateModel) = as((ps=as(Array, as𝕀, length(problem.senate)),))

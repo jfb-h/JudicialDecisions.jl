@@ -40,7 +40,7 @@ export DataSource, BPatG
 export transformation, sample, paramnames
 export DynamicHMCPosterior
 
-export SenateModelPosterior
+export BinomialSenateModel
 
 
 

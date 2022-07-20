@@ -40,10 +40,16 @@ Outcome(1, "partially annulled")
 # Bayesian models for judicial decision making
 
 The package contains a series of statistical model implementations for modeling aspects of the decision process.
-One of the simplest models is a Binomial model for the probability that a given senate will anull a patent (i.e., cross-senate variation):
+We start with a simple hierarchical Binomial model for the probability that a given senate will nullify a patent (i.e., cross-senate variation):
 
 $$
-y_s \sim \textrm{Binomial}(n_s, p_s), \text{ for } i=1, \ldots, S
+\begin{align}
+y_s &\sim \textrm{Binomial}(n_s, p_s), \text{ for } s=1, \ldots, S \\
+p_s &= \textrm{logit}^{-1}(\alpha_s) \\
+\alpha_s &\sim \textrm{Normal}(\mu, \sigma) \\
+\mu &\sim \textrm{Normal}(0, 1) \\
+\sigma & \sim \textrm{Exponential}(1) \\
+\end{align}
 $$
 
 where $S$ refers to the total number of senates.
@@ -52,19 +58,19 @@ Here is how we would use the implementation of this model in the package:
 
 
 ```julia
-problem = BinomialSenateModel(decisions);
-post = sample(problem, 1000)
-DynamicHMCPosterior with 1000 samples and parameters (:ps,)
+julia> problem = BinomialSenateModel(decisions);
+julia> post = sample(problem, 1000)
+DynamicHMCPosterior with 1000 samples and parameters (:αs, :μ, :σ)
 
-julia> mean(post.ps)
+julia> mean(post.αs)
 8-element Vector{Float64}:
- 0.6983246848950473
- 0.7702156094539311
- 0.7642127632354627
- 0.7971603887783285
- 0.7333720201613461
- 0.7651470656631522
- 0.8560307824560833
- 0.7171744109160901
+ 1.1533265420437266
+ 1.2302096660141322
+ 1.2042245345786518
+ 1.2937742490215314
+ 1.1191711839066207
+ 1.215801205986333
+ 1.3576725865081927
+ 1.166707942601264
 ```
 

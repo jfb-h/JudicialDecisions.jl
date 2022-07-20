@@ -18,13 +18,13 @@ function BinomialSenateModel(decisions::Vector{Decision})
 end
 
 function (problem::BinomialSenateModel)(θ)
-    @unpack ps = θ
+    @unpack αs, μ, σ = θ
     @unpack ys, ns, senate = problem
-
-    loglik = sum(logpdf(Binomial(n, p), y) for (n, p, y) in zip(ns, ps, ys))
-    logpri = sum(logpdf(Beta(2,2), p) for p in ps)
-
+    loglik = sum(logpdf(Binomial(n, logistic.(α)), y) for (n, α, y) in zip(ns, αs, ys))
+    logpri = sum(logpdf(Normal(μ, σ), α) for α in αs) + logpdf(Normal(0, 1), μ) + logpdf(Exponential(1), σ)
     loglik + logpri
 end
 
-transformation(problem::BinomialSenateModel) = as((ps=as(Array, as𝕀, length(problem.senate)),))
+function transformation(problem::BinomialSenateModel)
+    as((αs=as(Array, asℝ, length(problem.senate)), μ=asℝ, σ=asℝ₊))
+end

@@ -1,5 +1,6 @@
 abstract type AbstractDecisionModel end
-
+abstract type AbstractInferenceAlgorithm end
+abstract type AbstractPosterior end
 
 """
     transformation(problem)
@@ -12,19 +13,13 @@ function transformation(problem)
 end
 
 
-abstract type SamplingAlgorithm end
-struct NUTS end
-
-
-abstract type AbstractPosterior end
-
 """
     DynamicHMCPosterior
 
 struct representing the posterior distribution of a model's parameters sampled with DynamicHMC.
 Also used for dispatch in the `sample` method.
 """
-struct DynamicHMCPosterior{T,S}
+struct DynamicHMCPosterior{T,S} <: AbstractPosterior
     post::T
     stat::S
 end
@@ -48,6 +43,8 @@ function Base.show(io::IO, ::MIME"text/plain", p::DynamicHMCPosterior)
 end
 
 
+struct NUTS <: AbstractInferenceAlgorithm end
+
 """
     sample(DynamicHMCPosterior(), problem, iter)
 
@@ -59,10 +56,11 @@ function sample(::NUTS, problem, iter; backend=:ForwardDiff)
     t = transformation(problem)
     ℓ = TransformedLogDensity(t, problem)
     ∇ℓ = ADgradient(backend, ℓ)
-    r = mcmc_with_warmup(Random.GLOBAL_RNG, ∇ℓ, iter)
+    r = mcmc_with_warmup(Random.GLOBAL_RNG, ∇ℓ, iter; reporter=ProgressMeterReport())
     post = StructArray(TransformVariables.transform.(t, r.chain))
     stat = (tree_statistics=r.tree_statistics, κ=r.κ, ϵ=r.ϵ)
     DynamicHMCPosterior(post, stat)
 end
 
 sample(problem, iter; kwargs...) = sample(NUTS(), problem, iter; kwargs...)
+sample(problem, iter, chains; kwargs...) = error("Sampling with multiple chains not implemented yet.")

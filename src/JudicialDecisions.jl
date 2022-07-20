@@ -23,6 +23,7 @@ using UnPack
 using LogDensityProblems
 using TransformVariables
 using DynamicHMC
+using StatsFuns: logistic
 
 include("datamodel.jl")
 include("utils.jl")

@@ -40,7 +40,7 @@ Outcome(1, "partially annulled")
 # Bayesian models for judicial decision making
 
 The package contains a series of statistical model implementations for modeling aspects of the decision process.
-We start with a simple hierarchical Binomial model for the probability that a given senate will nullify a patent (i.e., cross-senate variation):
+We start with a simple hierarchical Binomial model for the probability that a given senate will nullify a patent (i.e., a model of cross-senate variation):
 
 $$
 \begin{align}
@@ -58,7 +58,7 @@ Here is how we would use the implementation of this model in the package:
 
 
 ```julia
-julia> problem = BinomialSenateModel(decisions);
+julia> problem = BinomialGroupsModel(decisions; groupfun=id ∘ senate);
 julia> post = sample(problem, 1000)
 DynamicHMCPosterior with 1000 samples and parameters (:αs, :μ, :σ)
 

@@ -13,7 +13,7 @@ using Reexport: @reexport
 @reexport using Statistics
 
 using JSON3
-using Dates: Date, format
+using Dates
 using Dictionaries: Dictionary, dictionary, sortkeys
 using SplitApplyCombine: group
 using StructArrays
@@ -28,11 +28,14 @@ using StatsFuns: logistic
 include("datamodel.jl")
 include("utils.jl")
 include("decisionmodels.jl")
-include("simple_senate_model.jl")
+
+include("models/binomial_senate_model.jl")
+include("models/timetrend_model.jl")
+include("models/binomial_groups_model.jl")
 
 # data handling (types + methods)
 export Outcome, Senate, Judge, Decision
-export id, label, senate, outcome, judges, patent
+export id, label, senate, outcome, judges, patent, date
 
 # data import
 export DataSource, BPatG
@@ -41,8 +44,6 @@ export DataSource, BPatG
 export transformation, sample, paramnames
 export DynamicHMCPosterior
 
-export BinomialSenateModel
-
-
+export BinomialGroupsModel
 
 end

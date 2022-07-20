@@ -83,7 +83,7 @@ Base.show(io::IO, d::Decision) = print(io, label(d))
 
 function Base.show(io::IO, ::MIME"text/plain", d::Decision)
     println(io, "Ruling $(label(d)) on $(patent(d))")
-    println(io, "Date of decision: $(format(date(d), "d U, Y"))")
+    println(io, "Date of decision: $(Dates.format(date(d), "d U, Y"))")
     println(io, "Decided by: $(label(senate(d))) ($(join(label.(judges(d)), ", ")))")
     println(io, "Outcome: $(label(outcome(d)))")
 end

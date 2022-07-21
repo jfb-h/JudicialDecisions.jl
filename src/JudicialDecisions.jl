@@ -29,9 +29,8 @@ include("datamodel.jl")
 include("utils.jl")
 include("decisionmodels.jl")
 
-include("models/binomial_senate_model.jl")
-include("models/timetrend_model.jl")
 include("models/binomial_groups_model.jl")
+include("models/mixed_membership_model.jl")
 
 # data handling (types + methods)
 export Outcome, Senate, Judge, Decision
@@ -44,6 +43,6 @@ export DataSource, BPatG
 export transformation, sample, paramnames
 export DynamicHMCPosterior
 
-export BinomialGroupsModel
+export BinomialGroupsModel, MixedMembershipModel
 
 end

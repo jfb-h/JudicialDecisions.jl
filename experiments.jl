@@ -46,7 +46,9 @@ md"""
 decisions = JudicialDecisions.loaddata(BPatG(), "../data/json")
 
 # ╔═╡ 8c651640-76a8-4cb6-ba63-cd749c09eaa9
-filter!(d -> Dates.year(date(d)) in 2000:2021, decisions);
+filter!(decisions) do d
+	Dates.year(date(d)) in 2000:2021 && length(judges(d)) > 0
+end;
 
 # ╔═╡ 61b0eb7a-6371-427f-bf93-6dad28ce91c5
 md"""
@@ -178,6 +180,49 @@ md"""
 The clearly positive standard deviation ($\sigma$) indicates that there is some variation in the probability to nullify a patent across the 21 years in the observation period. Inspecting the per-year probabilities of annullment in panel C indicates a slight trend towards annullment in recent years, however with strong estimation uncertainty.
 """
 
+# ╔═╡ 2bae2ba9-25c7-40ab-953c-039d40d05308
+md"""
+## Mixed membership multilevel logistic model for variation by judge
+"""
+
+# ╔═╡ b2cb7fd6-c830-4395-8b27-dd75e2a9da86
+md"""
+$$\begin{align}
+y_i &\sim \textrm{Bernoulli}(p_i), \text{ for } i=1,\ldots, N \\
+p_i &= \alpha + \frac{1}{|J_i|} \sum_{j \in J_i} \delta_{j} \\
+
+\delta_j &\sim \textrm{Normal}(\mu, \sigma) \\
+\mu &\sim \textrm{Normal}(0, 1) \\
+\sigma &\sim \textrm{Exponential}(1)
+\end{align}$$
+"""
+
+# ╔═╡ b9ac6e72-3fcf-48b0-9865-3e50afce8095
+problem_judges = MixedMembershipModel(decisions)
+
+# ╔═╡ 6f26cb79-6518-4782-a0fe-bfee71114e4e
+# ╠═╡ disabled = true
+#=╠═╡
+let 
+	problem = problem_judges
+	J = maximum(reduce(vcat, problem.js))
+	δs = randn(J)
+	α = randn()
+	μ = randn()
+	σ = randexp()
+	problem_judges((; α, δs, μ, σ))
+end
+  ╠═╡ =#
+
+# ╔═╡ 4a6c99ff-7ba8-437e-87a4-283d7f90cf42
+post_judges = sample(problem_judges, 500)
+
+# ╔═╡ 48de5ca2-de7d-4a80-bc3c-9ea4edd5d135
+post_judges.δs
+
+# ╔═╡ 8b274844-a1a7-476c-abeb-cdca63934860
+JudicialDecisions.stats(post_judges)
+
 # ╔═╡ 7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 md"""
 # Setup
@@ -206,6 +251,13 @@ md"""
 # ╠═6ab4c400-7d0c-4ea4-b200-7758494d1a0b
 # ╠═14e315b6-2145-4f06-9267-fe291a3d6558
 # ╟─e1ad7007-2adb-4bee-8079-c2c248b6618f
+# ╟─2bae2ba9-25c7-40ab-953c-039d40d05308
+# ╟─b2cb7fd6-c830-4395-8b27-dd75e2a9da86
+# ╠═b9ac6e72-3fcf-48b0-9865-3e50afce8095
+# ╠═6f26cb79-6518-4782-a0fe-bfee71114e4e
+# ╠═4a6c99ff-7ba8-437e-87a4-283d7f90cf42
+# ╠═48de5ca2-de7d-4a80-bc3c-9ea4edd5d135
+# ╠═8b274844-a1a7-476c-abeb-cdca63934860
 # ╟─7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 # ╠═1f7ea756-23ad-4b69-bba3-2fa15c16ae35
 # ╠═10086304-0529-4373-8546-9025f6d5057f

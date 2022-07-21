@@ -15,27 +15,14 @@ begin
 	using JudicialDecisions
 end
 
-# ╔═╡ 10086304-0529-4373-8546-9025f6d5057f
+# ╔═╡ 29154953-1eb4-486b-844b-d0f52734cff2
 using CairoMakie; set_theme!(theme_light())
 
-# ╔═╡ 96520e49-9971-4161-af22-d3bfd2e8bd77
-using StatsBase: countmap
-
-# ╔═╡ e20009ad-9267-4248-b9ba-8f27cd187b1a
+# ╔═╡ 7a8d03ea-4651-4b70-8419-c718c2d9ccd3
 using StatsFuns: logistic
 
-# ╔═╡ 64ebdc08-c795-4dc1-9755-85f9886366f2
+# ╔═╡ 1b04c583-6c35-4f2d-b510-ebed914b60b7
 using Dates
-
-# ╔═╡ 84959732-8563-4758-b92e-9ccaaa042098
-md"""
-# TODO
-
-- [x] Datamodel
-- [x] Simple senate model
-- [ ] Simple time trend model
-
-"""
 
 # ╔═╡ 3b30fd71-6e74-4ebe-ad8a-a639a702a6d9
 md"""
@@ -97,49 +84,6 @@ md"""
 #### Posterior inference
 """
 
-# ╔═╡ fe62f9b7-662c-4825-923d-6d8c73a5c4e0
-function plot_posterior(problem, post)
-	fig = Figure(resolution=(800, 900))
-	
-	color = (:grey60, .5); titlealign = :left
-	
-	ax1 = Axis(fig[1,1]; title="Posterior distribution of logistic(μ)", titlealign)
-	ax2 = Axis(fig[2,1]; title="Posterior distribution of σ", titlealign)
-	
-	density!(ax1, logistic.(post.μ); color)
-	density!(ax2, post.σ; color)
-
-	ps = map(x -> broadcast(logistic, x), post.αs)
-	o = id.(outcome.(decisions))
-	m = count(o .== 1) / length(o)
-	x = mean(ps)
-	y = 1:length(x)
-	s = std(ps)
-	
-	xticks = round.(sort(vcat(m, 0, .5, 1)), digits=2)
-	
-	ax3 = Axis(fig[3,1],
-		yticks=(y, string.(problem.group)), 
-		xticks= (xticks, string.(xticks)),
-		xlabel="Probability of (partial) annullment", 
-		title="Posterior distribution of αs",
-		titlealign=:left,
-	)
-
-	vlines!(ax3, m, color=:grey70)
-	errorbars!(ax3, x, y, 2s, direction=:x)
-	scatter!(ax3, x, y, color=:black)
-	xlims!(ax3, 0, 1)
-
-	Label(fig[1,1, TopLeft()], "A", textsize=25, color=:black, padding=(0,15, 15, 0))
-	Label(fig[2,1, TopLeft()], "B", textsize=25, color=:black, padding=(0,15, 15, 0))
-	Label(fig[3,1, TopLeft()], "C", textsize=25, color=:black, padding=(0,15, 15, 0))
-
-	rowsize!(fig.layout, 3, Relative(.6))
-	
-	fig
-end
-
 # ╔═╡ 04f0f1b7-49db-416c-a1f3-d349401e6ebb
 plot_posterior(problem, post)
 
@@ -177,7 +121,7 @@ plot_posterior(problem_years, post_years)
 # ╔═╡ e1ad7007-2adb-4bee-8079-c2c248b6618f
 md"""
 #### Key findings
-The clearly positive standard deviation ($\sigma$) indicates that there is some variation in the probability to nullify a patent across the 21 years in the observation period. Inspecting the per-year probabilities of annullment in panel C indicates a slight trend towards annullment in recent years, however with strong estimation uncertainty.
+The positive standard deviation ($\sigma$) indicates that there is some variation in the probability to nullify a patent across the 21 years in the observation period. Inspecting the per-year probabilities of annullment in panel C indicates a slight trend towards annullment in recent years, however with strong estimation uncertainty.
 """
 
 # ╔═╡ 2bae2ba9-25c7-40ab-953c-039d40d05308
@@ -200,28 +144,15 @@ p_i &= \alpha + \frac{1}{|J_i|} \sum_{j \in J_i} \delta_{j} \\
 # ╔═╡ b9ac6e72-3fcf-48b0-9865-3e50afce8095
 problem_judges = MixedMembershipModel(decisions)
 
-# ╔═╡ 6f26cb79-6518-4782-a0fe-bfee71114e4e
-# ╠═╡ disabled = true
-#=╠═╡
-let 
-	problem = problem_judges
-	J = maximum(reduce(vcat, problem.js))
-	δs = randn(J)
-	α = randn()
-	μ = randn()
-	σ = randexp()
-	problem_judges((; α, δs, μ, σ))
-end
-  ╠═╡ =#
-
 # ╔═╡ 4a6c99ff-7ba8-437e-87a4-283d7f90cf42
+# ╠═╡ show_logs = false
 post_judges = sample(problem_judges, 500)
 
-# ╔═╡ 48de5ca2-de7d-4a80-bc3c-9ea4edd5d135
-post_judges.δs
+# ╔═╡ d43c6dd2-25bd-41af-a15c-375a4ec4127b
+plot_posterior(problem_judges, post_judges; filter_predicate= >(0))
 
-# ╔═╡ 8b274844-a1a7-476c-abeb-cdca63934860
-JudicialDecisions.stats(post_judges)
+# ╔═╡ b6a9ee71-7ef4-4669-bf90-f63a3d6e9ad2
+predict(problem_judges, post_judges)
 
 # ╔═╡ 7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 md"""
@@ -229,7 +160,6 @@ md"""
 """
 
 # ╔═╡ Cell order:
-# ╟─84959732-8563-4758-b92e-9ccaaa042098
 # ╟─3b30fd71-6e74-4ebe-ad8a-a639a702a6d9
 # ╠═5c985bb7-1db0-4b3d-81bb-0bd255aeb843
 # ╠═8c651640-76a8-4cb6-ba63-cd749c09eaa9
@@ -241,7 +171,6 @@ md"""
 # ╠═b8dfa51a-a940-43ff-ab61-b4dd63de7cd0
 # ╠═f85db977-0f1e-47ce-b886-c671a792e639
 # ╟─d4fcfbbe-35b2-423e-b8bf-03604b254ef7
-# ╟─fe62f9b7-662c-4825-923d-6d8c73a5c4e0
 # ╠═04f0f1b7-49db-416c-a1f3-d349401e6ebb
 # ╟─ca3f7c0f-0742-44ea-82a8-26c15487cfc0
 # ╟─892d71ca-1034-4ebc-b092-7f48aee8ffd6
@@ -254,14 +183,12 @@ md"""
 # ╟─2bae2ba9-25c7-40ab-953c-039d40d05308
 # ╟─b2cb7fd6-c830-4395-8b27-dd75e2a9da86
 # ╠═b9ac6e72-3fcf-48b0-9865-3e50afce8095
-# ╠═6f26cb79-6518-4782-a0fe-bfee71114e4e
+# ╠═29154953-1eb4-486b-844b-d0f52734cff2
+# ╠═7a8d03ea-4651-4b70-8419-c718c2d9ccd3
 # ╠═4a6c99ff-7ba8-437e-87a4-283d7f90cf42
-# ╠═48de5ca2-de7d-4a80-bc3c-9ea4edd5d135
-# ╠═8b274844-a1a7-476c-abeb-cdca63934860
+# ╠═d43c6dd2-25bd-41af-a15c-375a4ec4127b
+# ╠═b6a9ee71-7ef4-4669-bf90-f63a3d6e9ad2
 # ╟─7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 # ╠═1f7ea756-23ad-4b69-bba3-2fa15c16ae35
-# ╠═10086304-0529-4373-8546-9025f6d5057f
-# ╠═96520e49-9971-4161-af22-d3bfd2e8bd77
-# ╠═e20009ad-9267-4248-b9ba-8f27cd187b1a
-# ╠═64ebdc08-c795-4dc1-9755-85f9886366f2
 # ╠═23cde6f0-066a-11ed-3a4c-037299b48733
+# ╠═1b04c583-6c35-4f2d-b510-ebed914b60b7

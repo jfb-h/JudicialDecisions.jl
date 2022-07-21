@@ -24,6 +24,8 @@ using LogDensityProblems
 using TransformVariables
 using DynamicHMC
 using StatsFuns: logistic
+using StatsBase: countmap
+using CairoMakie; set_theme!(theme_light())
 
 include("datamodel.jl")
 include("utils.jl")
@@ -32,6 +34,8 @@ include("decisionmodels.jl")
 include("models/binomial_groups_model.jl")
 include("models/mixed_membership_model.jl")
 
+include("visualization.jl")
+
 # data handling (types + methods)
 export Outcome, Senate, Judge, Decision
 export id, label, senate, outcome, judges, patent, date
@@ -39,8 +43,11 @@ export id, label, senate, outcome, judges, patent, date
 # data import
 export DataSource, BPatG
 
+# plotting
+export plot_posterior
+
 # bayesian modeling
-export transformation, sample, paramnames
+export transformation, sample, paramnames, predict
 export DynamicHMCPosterior
 
 export BinomialGroupsModel, MixedMembershipModel

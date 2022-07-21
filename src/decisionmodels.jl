@@ -64,3 +64,13 @@ end
 
 sample(problem, iter; kwargs...) = sample(NUTS(), problem, iter; kwargs...)
 sample(problem, iter, chains; kwargs...) = error("Sampling with multiple chains not implemented yet.")
+
+
+"""
+    predict(problem, post)
+
+Perform posterior prediction base on posterior distribution `post` over the data in `problem`.
+"""
+function predict(problem::AbstractDecisionModel, post::AbstractPosterior) 
+    throw(ArgumentError("Not implemented yet for $(typeof(problem)). Needs to be implemented on a per-model basis."))
+end

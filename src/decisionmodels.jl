@@ -74,3 +74,14 @@ Perform posterior prediction base on posterior distribution `post` over the data
 function predict(problem::AbstractDecisionModel, post::AbstractPosterior) 
     throw(ArgumentError("Not implemented yet for $(typeof(problem)). Needs to be implemented on a per-model basis."))
 end
+
+# """
+#     checkconvergence(post)
+
+# Check effective sample sizes and convergence statistics for the NUTS algorithm.
+# """
+# function checkconvergence(post::DynamicHMCPosterior)
+#     ess = vec(mapslices(MCMCDiagnostics.effective_sample_size, DynamicHMC.position_matrix(_post(post)); dims=2))
+#     tree_stats = DynamicHMC.Diagnostics.summarize_tree_statistics(stats(post).tree_statistics)
+#     (;ess, tree_stats)
+# end

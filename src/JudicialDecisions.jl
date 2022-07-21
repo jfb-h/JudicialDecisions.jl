@@ -18,11 +18,13 @@ using Dictionaries: Dictionary, dictionary, sortkeys
 using SplitApplyCombine: group
 using StructArrays
 using Random
+using LinearAlgebra
 using Distributions
 using UnPack
 using LogDensityProblems
 using TransformVariables
 using DynamicHMC
+using MCMCDiagnostics
 using StatsFuns: logistic
 using StatsBase: countmap
 using CairoMakie; set_theme!(theme_light())
@@ -47,7 +49,7 @@ export DataSource, BPatG
 export plot_posterior
 
 # bayesian modeling
-export transformation, sample, paramnames, predict
+export transformation, sample, paramnames, predict, stats
 export DynamicHMCPosterior
 
 export BinomialGroupsModel, MixedMembershipModel

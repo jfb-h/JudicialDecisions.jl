@@ -40,3 +40,9 @@ function loaddata(::BPatG, dir::String)
     end
 end
 
+ 
+_filterjudges(problem, predicate) = begin 
+    j = reduce(vcat, problem.js)
+    c = countmap(j) |> Dictionary
+    filter!(predicate, c) |> keys |> collect
+end

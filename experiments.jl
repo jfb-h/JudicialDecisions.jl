@@ -18,8 +18,8 @@ end
 # ╔═╡ 29154953-1eb4-486b-844b-d0f52734cff2
 using CairoMakie; set_theme!(theme_light())
 
-# ╔═╡ 7a8d03ea-4651-4b70-8419-c718c2d9ccd3
-using StatsFuns: logistic
+# ╔═╡ ebbdca71-d2b6-47f4-9e25-90a8b5794045
+using DynamicHMC: Diagnostics
 
 # ╔═╡ 1b04c583-6c35-4f2d-b510-ebed914b60b7
 using Dates
@@ -137,7 +137,7 @@ p_i &= \alpha + \frac{1}{|J_i|} \sum_{j \in J_i} \delta_{j} \\
 
 \delta_j &\sim \textrm{Normal}(\mu, \sigma) \\
 \mu &\sim \textrm{Normal}(0, 1) \\
-\sigma &\sim \textrm{Exponential}(1)
+\sigma &\sim \textrm{Exponential}(0.5)
 \end{align}$$
 """
 
@@ -149,10 +149,10 @@ problem_judges = MixedMembershipModel(decisions)
 post_judges = sample(problem_judges, 500)
 
 # ╔═╡ d43c6dd2-25bd-41af-a15c-375a4ec4127b
-plot_posterior(problem_judges, post_judges; filter_predicate= >(0))
+plot_posterior(problem_judges, post_judges, decisions; filter_predicate= >(0))
 
-# ╔═╡ b6a9ee71-7ef4-4669-bf90-f63a3d6e9ad2
-predict(problem_judges, post_judges)
+# ╔═╡ 4d11ac83-0228-4c5b-b623-06238269b4c5
+Diagnostics.summarize_tree_statistics(stats(post).tree_statistics)
 
 # ╔═╡ 7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 md"""
@@ -184,10 +184,10 @@ md"""
 # ╟─b2cb7fd6-c830-4395-8b27-dd75e2a9da86
 # ╠═b9ac6e72-3fcf-48b0-9865-3e50afce8095
 # ╠═29154953-1eb4-486b-844b-d0f52734cff2
-# ╠═7a8d03ea-4651-4b70-8419-c718c2d9ccd3
 # ╠═4a6c99ff-7ba8-437e-87a4-283d7f90cf42
 # ╠═d43c6dd2-25bd-41af-a15c-375a4ec4127b
-# ╠═b6a9ee71-7ef4-4669-bf90-f63a3d6e9ad2
+# ╠═ebbdca71-d2b6-47f4-9e25-90a8b5794045
+# ╠═4d11ac83-0228-4c5b-b623-06238269b4c5
 # ╟─7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 # ╠═1f7ea756-23ad-4b69-bba3-2fa15c16ae35
 # ╠═23cde6f0-066a-11ed-3a4c-037299b48733

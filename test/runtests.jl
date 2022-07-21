@@ -1,6 +1,6 @@
-using MixedMembershipModels
+using JudicialDecisions
 using Test
 
-@testset "MixedMembershipModels.jl" begin
+@testset "JudicialDecisions.jl" begin
     # Write your tests here.
 end

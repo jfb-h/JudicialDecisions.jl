@@ -55,7 +55,13 @@ If the first argument is omitted, NUTS via `DynamicHMC`` is used by default.
 function sample(::NUTS, problem, iter; backend=:ForwardDiff)
     t = transformation(problem)
     ℓ = TransformedLogDensity(t, problem)
-    ∇ℓ = ADgradient(backend, ℓ)
+    ∇ℓ = if backend == :ForwardDiff
+        ADgradient(backend, ℓ)
+    elseif backend == :ReverseDiff
+        ADgradient(backend, ℓ; compile=Val(true))
+    else
+        throw(ArgumentError("Unknown AD backend."))
+    end
     r = mcmc_with_warmup(Random.GLOBAL_RNG, ∇ℓ, iter; reporter=ProgressMeterReport())
     post = StructArray(TransformVariables.transform.(t, r.chain))
     stat = (tree_statistics=r.tree_statistics, κ=r.κ, ϵ=r.ϵ)

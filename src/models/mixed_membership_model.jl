@@ -33,12 +33,12 @@ function transformation(problem::MixedMembershipModel)
 end
 
 function predict(problem::MixedMembershipModel, post::DynamicHMCPosterior)
-	@unpack ys, js, ns = problem
-	
-	map(post) do s
-		@unpack α, zs, σ = s
-		map(zip(js, ns)) do (j, n)
-			logistic(α + sum(x -> x*σ, @views zs[j]) / n)
-		end
-	end
+    @unpack ys, js, ns = problem
+
+    map(post) do s
+        @unpack α, zs, σ = s
+        map(zip(js, ns)) do (j, n)
+            logistic(α + sum(x -> x*σ, @views zs[j]) / n)
+        end
+    end
 end

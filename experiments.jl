@@ -15,14 +15,17 @@ begin
 	using JudicialDecisions
 end
 
-# ╔═╡ 29154953-1eb4-486b-844b-d0f52734cff2
-using CairoMakie; set_theme!(theme_light())
+# ╔═╡ 155f8ea6-384f-43cc-aae7-b78f81e8ef6b
+using LogDensityProblems
 
 # ╔═╡ ebbdca71-d2b6-47f4-9e25-90a8b5794045
 using DynamicHMC: Diagnostics
 
 # ╔═╡ 1b04c583-6c35-4f2d-b510-ebed914b60b7
 using Dates
+
+# ╔═╡ 29154953-1eb4-486b-844b-d0f52734cff2
+using CairoMakie; set_theme!(theme_light())
 
 # ╔═╡ 3b30fd71-6e74-4ebe-ad8a-a639a702a6d9
 md"""
@@ -121,13 +124,16 @@ plot_posterior(problem_years, post_years)
 # ╔═╡ e1ad7007-2adb-4bee-8079-c2c248b6618f
 md"""
 #### Key findings
-The positive standard deviation ($\sigma$) indicates that there is some variation in the probability to nullify a patent across the 21 years in the observation period. Inspecting the per-year probabilities of annullment in panel C indicates a slight trend towards annullment in recent years, however with strong estimation uncertainty.
+The positive standard deviation ($\sigma$) indicates that there is some variation in the probability to nullify a patent across the 21 years in the observation period. Inspecting the per-year probabilities of annullment in panel C indicates a very slight trend towards annullment in recent years, however with strong estimation uncertainty.
 """
 
 # ╔═╡ 2bae2ba9-25c7-40ab-953c-039d40d05308
 md"""
-## Mixed membership multilevel logistic model for variation by judge
+## Variation by judge
 """
+
+# ╔═╡ 369c5294-f640-47e0-9af8-a6f50f2edf98
+
 
 # ╔═╡ b2cb7fd6-c830-4395-8b27-dd75e2a9da86
 md"""
@@ -135,8 +141,8 @@ $$\begin{align}
 y_i &\sim \textrm{Bernoulli}(p_i), \text{ for } i=1,\ldots, N \\
 p_i &= \alpha + \frac{1}{|J_i|} \sum_{j \in J_i} \delta_{j} \\
 
-\delta_j &\sim \textrm{Normal}(\mu, \sigma) \\
-\mu &\sim \textrm{Normal}(0, 1) \\
+\alpha &\sim \textrm{Normal}(0, 1) \\
+\delta_j &\sim \textrm{Normal}(0, \sigma) \\
 \sigma &\sim \textrm{Exponential}(0.5)
 \end{align}$$
 """
@@ -146,13 +152,16 @@ problem_judges = MixedMembershipModel(decisions)
 
 # ╔═╡ 4a6c99ff-7ba8-437e-87a4-283d7f90cf42
 # ╠═╡ show_logs = false
-post_judges = sample(problem_judges, 500)
+post_judges = sample(problem_judges, 500; backend=:ReverseDiff)
 
-# ╔═╡ d43c6dd2-25bd-41af-a15c-375a4ec4127b
-plot_posterior(problem_judges, post_judges, decisions; filter_predicate= >(0))
+# ╔═╡ 76a4d9be-cd5e-4abc-93d1-9818fddbac57
+ADgradient
 
 # ╔═╡ 4d11ac83-0228-4c5b-b623-06238269b4c5
 Diagnostics.summarize_tree_statistics(stats(post).tree_statistics)
+
+# ╔═╡ d43c6dd2-25bd-41af-a15c-375a4ec4127b
+plot_posterior(problem_judges, post_judges, decisions; filter_predicate= >(0))
 
 # ╔═╡ 7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 md"""
@@ -181,14 +190,17 @@ md"""
 # ╠═14e315b6-2145-4f06-9267-fe291a3d6558
 # ╟─e1ad7007-2adb-4bee-8079-c2c248b6618f
 # ╟─2bae2ba9-25c7-40ab-953c-039d40d05308
+# ╠═369c5294-f640-47e0-9af8-a6f50f2edf98
 # ╟─b2cb7fd6-c830-4395-8b27-dd75e2a9da86
 # ╠═b9ac6e72-3fcf-48b0-9865-3e50afce8095
-# ╠═29154953-1eb4-486b-844b-d0f52734cff2
 # ╠═4a6c99ff-7ba8-437e-87a4-283d7f90cf42
-# ╠═d43c6dd2-25bd-41af-a15c-375a4ec4127b
+# ╠═155f8ea6-384f-43cc-aae7-b78f81e8ef6b
+# ╠═76a4d9be-cd5e-4abc-93d1-9818fddbac57
 # ╠═ebbdca71-d2b6-47f4-9e25-90a8b5794045
 # ╠═4d11ac83-0228-4c5b-b623-06238269b4c5
+# ╠═d43c6dd2-25bd-41af-a15c-375a4ec4127b
 # ╟─7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 # ╠═1f7ea756-23ad-4b69-bba3-2fa15c16ae35
 # ╠═23cde6f0-066a-11ed-3a4c-037299b48733
 # ╠═1b04c583-6c35-4f2d-b510-ebed914b60b7
+# ╠═29154953-1eb4-486b-844b-d0f52734cff2

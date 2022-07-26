@@ -13,6 +13,7 @@ using Reexport: @reexport
 @reexport using Statistics
 
 using JSON3
+using CSV
 using Dates
 using Dictionaries: Dictionary, dictionary, sortkeys
 using SplitApplyCombine: group
@@ -24,6 +25,7 @@ using UnPack
 using LogDensityProblems
 using TransformVariables
 using DynamicHMC
+import ReverseDiff
 using MCMCDiagnostics
 using StatsFuns: logistic
 using StatsBase: countmap
@@ -39,8 +41,8 @@ include("models/mixed_membership_model.jl")
 include("visualization.jl")
 
 # data handling (types + methods)
-export Outcome, Senate, Judge, Decision
-export id, label, senate, outcome, judges, patent, date
+export Outcome, Senate, Judge, Decision, Patent
+export id, label, senate, outcome, judges, date, patent, cpc, subgroup
 
 # data import
 export DataSource, BPatG

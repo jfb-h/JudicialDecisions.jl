@@ -15,9 +15,6 @@ begin
 	using JudicialDecisions
 end
 
-# ╔═╡ 155f8ea6-384f-43cc-aae7-b78f81e8ef6b
-using LogDensityProblems
-
 # ╔═╡ ebbdca71-d2b6-47f4-9e25-90a8b5794045
 using DynamicHMC: Diagnostics
 
@@ -132,9 +129,6 @@ md"""
 ## Variation by judge
 """
 
-# ╔═╡ 369c5294-f640-47e0-9af8-a6f50f2edf98
-
-
 # ╔═╡ b2cb7fd6-c830-4395-8b27-dd75e2a9da86
 md"""
 $$\begin{align}
@@ -152,16 +146,16 @@ problem_judges = MixedMembershipModel(decisions)
 
 # ╔═╡ 4a6c99ff-7ba8-437e-87a4-283d7f90cf42
 # ╠═╡ show_logs = false
-post_judges = sample(problem_judges, 500; backend=:ReverseDiff)
-
-# ╔═╡ 76a4d9be-cd5e-4abc-93d1-9818fddbac57
-ADgradient
+post_judges = sample(problem_judges, 1000; backend=:ReverseDiff)
 
 # ╔═╡ 4d11ac83-0228-4c5b-b623-06238269b4c5
-Diagnostics.summarize_tree_statistics(stats(post).tree_statistics)
+Diagnostics.summarize_tree_statistics(stats(post_judges).tree_statistics)
 
 # ╔═╡ d43c6dd2-25bd-41af-a15c-375a4ec4127b
-plot_posterior(problem_judges, post_judges, decisions; filter_predicate= >(0))
+plot_posterior(problem_judges, post_judges, decisions; filter_predicate = >(0))
+
+# ╔═╡ 4b3116f2-a466-4096-b48f-99b7df35fd34
+
 
 # ╔═╡ 7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 md"""
@@ -190,15 +184,13 @@ md"""
 # ╠═14e315b6-2145-4f06-9267-fe291a3d6558
 # ╟─e1ad7007-2adb-4bee-8079-c2c248b6618f
 # ╟─2bae2ba9-25c7-40ab-953c-039d40d05308
-# ╠═369c5294-f640-47e0-9af8-a6f50f2edf98
 # ╟─b2cb7fd6-c830-4395-8b27-dd75e2a9da86
 # ╠═b9ac6e72-3fcf-48b0-9865-3e50afce8095
 # ╠═4a6c99ff-7ba8-437e-87a4-283d7f90cf42
-# ╠═155f8ea6-384f-43cc-aae7-b78f81e8ef6b
-# ╠═76a4d9be-cd5e-4abc-93d1-9818fddbac57
 # ╠═ebbdca71-d2b6-47f4-9e25-90a8b5794045
 # ╠═4d11ac83-0228-4c5b-b623-06238269b4c5
 # ╠═d43c6dd2-25bd-41af-a15c-375a4ec4127b
+# ╠═4b3116f2-a466-4096-b48f-99b7df35fd34
 # ╟─7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 # ╠═1f7ea756-23ad-4b69-bba3-2fa15c16ae35
 # ╠═23cde6f0-066a-11ed-3a4c-037299b48733

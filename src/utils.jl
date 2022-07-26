@@ -15,15 +15,11 @@ const OUTCOMES = dictionary([
 
 Load data in `.jsonl` format from directory dir and construct a `Vector{Decision}`.
 """
-function loaddata(::BPatG, dir::String)
-    files = readdir(dir)
-
-    json = mapreduce(vcat, files) do f
-        JSON3.read(read(joinpath(dir, f)), jsonlines=true)
-    end
+function loaddata(::BPatG, jsonfile::AbstractString)
+    json = JSON3.read(read(jsonfile), jsonlines=true)
 
     #TODO: Better missing handling
-    filter!(j -> j.outcome != "other", json)
+    json = filter(j -> j.outcome != "other", json)
 
     judgepool = mapreduce(j -> j.judges, unique ∘ vcat, json)
     judgepool = Dictionary(sort(judgepool), 1:length(judgepool))
@@ -31,12 +27,13 @@ function loaddata(::BPatG, dir::String)
     map(enumerate(json)) do (i, j)
         outcome = Outcome(OUTCOMES[j.outcome], j.outcome)
         senate = Senate(j.senate, "$(j.senate). Senate")
+        patent = Patent(j.patent.nr, j.patent.cpc)
         date = Date(j.date)
         judges = map(j.judges) do j
             Judge(judgepool[j], j)
         end
 
-        Decision(i, j.id, j.patent, outcome, date, senate, judges)
+        Decision(i, j.id, patent, outcome, date, senate, judges)
     end
 end
 

@@ -47,6 +47,24 @@ struct Judge
 end
 
 """
+    Patent
+
+Patent for which a validity decision is to be made. Contains the patent number issued 
+by the respective authority (`auth` and `id`) and a vector of CPC symbols.
+"""
+struct Patent
+    nr::String
+    cpc::Vector{String}
+end
+
+Patent(s::AbstractString, c::Nothing) = Patent(s, String[])
+Patent(s::AbstractString, c::AbstractArray) = Patent(s, string.(filter(!isnothing, c)))
+
+id(x::Patent) = x.nr
+cpc(x::Patent) = x.cpc
+subgroup(x::Patent) = first.(x.cpc, 4) |> unique
+
+"""
     Decision
 
 Metadata for a judicial decisions on patent nullity.
@@ -63,7 +81,7 @@ Metadata for a judicial decisions on patent nullity.
 struct Decision
     id::Int
     label::String
-    patent::String
+    patent::Patent
     outcome::Outcome
     date::Date
     senate::Senate
@@ -82,7 +100,7 @@ date(x::Decision) = x.date
 Base.show(io::IO, d::Decision) = print(io, label(d))
 
 function Base.show(io::IO, ::MIME"text/plain", d::Decision)
-    println(io, "Ruling $(label(d)) on $(patent(d))")
+    println(io, "Ruling $(label(d)) on $(id(patent(d)))")
     println(io, "Date of decision: $(Dates.format(date(d), "d U, Y"))")
     println(io, "Decided by: $(label(senate(d))) ($(join(label.(judges(d)), ", ")))")
     println(io, "Outcome: $(label(outcome(d)))")

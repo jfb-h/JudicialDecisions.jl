@@ -101,7 +101,7 @@ function plot_posterior(problem::MixedMembershipModel, post::DynamicHMCPosterior
 
 	 # aggregate judge probabilities
 
-	 ax5 = Axis(fig[4,:], title="Posterior predictions for average per-judge outcome", titlealign=:left)
+	 ax5 = Axis(fig[4,:], title="Posterior predictions for average per-group outcome", titlealign=:left)
 
 	 let 
 		js = problem.js

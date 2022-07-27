@@ -42,7 +42,8 @@ include("visualization.jl")
 
 # data handling (types + methods)
 export Outcome, Senate, Judge, Decision, Patent
-export id, label, senate, outcome, judges, date, patent, cpc, subgroup
+export id, label, senate, outcome, judges, date, patent, cpc, subclass, class, section
+export cpc2int
 
 # data import
 export DataSource, BPatG

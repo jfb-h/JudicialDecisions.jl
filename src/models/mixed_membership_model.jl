@@ -7,24 +7,32 @@ struct MixedMembershipModel{T,S,U}
     ys::T
     js::S
     ns::U
-    N::Int
+    J::Int
 end
 
-function MixedMembershipModel(decisions::Vector{Decision})
+function MixedMembershipModel(::Type{Judge}, decisions::Vector{Decision})
     ys = (id ∘ outcome).(decisions)
     #js = [SVector(id.(judges(d))...) for d in decisions] # leads to lots of allocations in logdensity evaluation
     js = [id.(judges(d)) for d in decisions]
     ns = length.(js)
-    N = maximum(reduce(vcat, js))
-    MixedMembershipModel(ys, js, ns, N)
+    J = maximum(reduce(vcat, js))
+    MixedMembershipModel(ys, js, ns, J)
+end
+
+function MixedMembershipModel(::Type{Patent}, decisions::Vector{Decision}; levelfun=class)
+    ys = (id ∘ outcome).(decisions)
+    ts, _ = cpc2int(decisions, levelfun)
+    ns = length.(ts)
+    T = maximum(reduce(vcat, ts))
+    MixedMembershipModel(ys, ts, ns, T)
 end
 
 function (problem::MixedMembershipModel)(θ)
     @unpack α, zs, σ = θ
-    @unpack ys, js, ns, N = problem
+    @unpack ys, js, ns, J = problem
 
     loglik = sum(logpdf(Bernoulli(logistic(α + @views sum(x -> x*σ, zs[j]) / n)), y) for (y, j, n) in zip(ys, js, ns))
-    logpri = logpdf(MvNormal(N, 1), zs) + logpdf(Normal(0, 1.5), α) + logpdf(Exponential(0.5), σ)
+    logpri = logpdf(MvNormal(J, 1), zs) + logpdf(Normal(0, 1.5), α) + logpdf(Exponential(0.5), σ)
     loglik + logpri
 end
 

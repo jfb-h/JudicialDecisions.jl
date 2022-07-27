@@ -43,3 +43,18 @@ _filterjudges(problem, predicate) = begin
     c = countmap(j) |> Dictionary
     filter!(predicate, c) |> keys |> collect
 end
+
+"""
+    cpc2int(decisions, levelfun)
+
+Return (1) an array of arrays containing, for each decision in `decisions`, 
+a vector with the integer positions of its associated cpc symbols with respect
+to (2) a sorted list of all cpc classes contained in decisions, as aggregated
+via `levelfun`. 
+"""
+function cpc2int(decisions, levelfun)
+	ts = (levelfun ∘ patent).(decisions)
+    tref = sort(unique(reduce(vcat, ts)))
+    ts_int = map(t -> map(i -> findfirst(==(i), tref), t), ts)
+	ts_int, tref
+end	

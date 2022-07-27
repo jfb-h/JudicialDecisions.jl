@@ -62,7 +62,9 @@ Patent(s::AbstractString, c::AbstractArray) = Patent(s, string.(filter(!isnothin
 
 id(x::Patent) = x.nr
 cpc(x::Patent) = x.cpc
-subgroup(x::Patent) = first.(x.cpc, 4) |> unique
+subclass(x::Patent) = first.(x.cpc, 4) |> unique
+class(x::Patent) = first.(x.cpc, 3) |> unique
+section(x::Patent) = first.(x.cpc, 1) |> unique
 
 """
     Decision

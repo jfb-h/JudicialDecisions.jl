@@ -29,12 +29,17 @@ md"""
 # Decision data
 """
 
+# ╔═╡ dbd9d1a2-6d2c-41be-84c2-4c851a0871a6
+datafile = "../data/json_augmented/json_augmented.jsonl"
+
 # ╔═╡ 5c985bb7-1db0-4b3d-81bb-0bd255aeb843
-decisions = JudicialDecisions.loaddata(BPatG(), "../data/json")
+decisions = JudicialDecisions.loaddata(BPatG(), datafile)
 
 # ╔═╡ 8c651640-76a8-4cb6-ba63-cd749c09eaa9
 filter!(decisions) do d
-	Dates.year(date(d)) in 2000:2021 && length(judges(d)) > 0
+	Dates.year(date(d)) in 2000:2021 && 
+	length(judges(d)) > 0 &&
+	length(patent(d) |> cpc) > 0
 end;
 
 # ╔═╡ 61b0eb7a-6371-427f-bf93-6dad28ce91c5
@@ -142,7 +147,7 @@ p_i &= \alpha + \frac{1}{|J_i|} \sum_{j \in J_i} \delta_{j} \\
 """
 
 # ╔═╡ b9ac6e72-3fcf-48b0-9865-3e50afce8095
-problem_judges = MixedMembershipModel(decisions)
+problem_judges = MixedMembershipModel(Judge, decisions)
 
 # ╔═╡ 4a6c99ff-7ba8-437e-87a4-283d7f90cf42
 # ╠═╡ show_logs = false
@@ -155,7 +160,29 @@ Diagnostics.summarize_tree_statistics(stats(post_judges).tree_statistics)
 plot_posterior(problem_judges, post_judges, decisions; filter_predicate = >(0))
 
 # ╔═╡ 4b3116f2-a466-4096-b48f-99b7df35fd34
+md"""
+## Variation by technology
+"""
 
+# ╔═╡ df128181-2143-4adc-b19d-2733e5ec2e2e
+problem_tech = MixedMembershipModel(Patent, decisions; levelfun=class)
+
+# ╔═╡ cfd74b89-1c29-4650-b10f-be83ea5dda48
+# ╠═╡ show_logs = false
+post_tech = sample(problem_tech, 1000; backend=:ReverseDiff)
+
+# ╔═╡ e878aa02-75d4-4b36-bcc8-698e896eb5ab
+Diagnostics.summarize_tree_statistics(stats(post_tech).tree_statistics)
+
+# ╔═╡ dd655ec0-12b3-413a-9029-68cd86a1a644
+plot_posterior(problem_tech, post_tech, decisions; filter_predicate = >(0))
+
+# ╔═╡ b3bfb358-1291-4c9e-ab6c-226e59c9b3bf
+let δs_mean = map(p -> p.zs * p.σ, post_tech) |> mean 
+	i = sortperm(δs_mean)
+	_, c = cpc2int(decisions, class)
+	c[i]
+end
 
 # ╔═╡ 7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 md"""
@@ -164,6 +191,7 @@ md"""
 
 # ╔═╡ Cell order:
 # ╟─3b30fd71-6e74-4ebe-ad8a-a639a702a6d9
+# ╠═dbd9d1a2-6d2c-41be-84c2-4c851a0871a6
 # ╠═5c985bb7-1db0-4b3d-81bb-0bd255aeb843
 # ╠═8c651640-76a8-4cb6-ba63-cd749c09eaa9
 # ╟─61b0eb7a-6371-427f-bf93-6dad28ce91c5
@@ -190,7 +218,12 @@ md"""
 # ╠═ebbdca71-d2b6-47f4-9e25-90a8b5794045
 # ╠═4d11ac83-0228-4c5b-b623-06238269b4c5
 # ╠═d43c6dd2-25bd-41af-a15c-375a4ec4127b
-# ╠═4b3116f2-a466-4096-b48f-99b7df35fd34
+# ╟─4b3116f2-a466-4096-b48f-99b7df35fd34
+# ╠═df128181-2143-4adc-b19d-2733e5ec2e2e
+# ╠═cfd74b89-1c29-4650-b10f-be83ea5dda48
+# ╠═e878aa02-75d4-4b36-bcc8-698e896eb5ab
+# ╠═dd655ec0-12b3-413a-9029-68cd86a1a644
+# ╠═b3bfb358-1291-4c9e-ab6c-226e59c9b3bf
 # ╟─7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 # ╠═1f7ea756-23ad-4b69-bba3-2fa15c16ae35
 # ╠═23cde6f0-066a-11ed-3a4c-037299b48733

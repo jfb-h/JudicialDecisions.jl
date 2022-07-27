@@ -2,15 +2,24 @@
     MultiMixedMembershipModel
 
 Multilevel mixed membership model for modeling the probability of annullment as a sum of judge effects and a sum of technology effects.
+
+# Fields
+- ys : (binary) outcome vector
+- js : contiguous ids of judges involved in each decision
+- ts : contiguous ids of technologies involved in each decision
+- njs : number of judges inolved in each decision
+- nts : number of technologies involved in each decision
+- J : Total number of judges
+- T : Total number of technologies
 """
 struct MultiMixedMembershipModel{T,S,U} <: AbstractDecisionModel
-    ys::T # (binary) outcome vector
-    js::S # contiguous ids of judges involved in each decision
-    ts::S# contiguous ids of technologies involved in each decision
-    njs::U # number of judges inolved in each decision
-    nts::U # number of technologies involved in each decision
-    J::Int # Total number of judges
-    T::Int # Total number of technologies
+    ys::T
+    js::S
+    ts::S
+    njs::U
+    nts::U
+    J::Int
+    T::Int
 end
 
 function MultiMixedMembershipModel(decisions::Vector{Decision}; levelfun=class)

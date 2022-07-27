@@ -3,7 +3,7 @@
 
 Multilevel mixed membership model for modeling the probability of annullment as a sum of individual judge effects.
 """
-struct MixedMembershipModel{T,S,U}
+struct MixedMembershipModel{T,S,U} <: AbstractDecisionModel
     ys::T
     js::S
     ns::U

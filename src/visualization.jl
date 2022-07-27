@@ -1,3 +1,43 @@
+function ridgeplot!(ax, post)
+    p = reduce(hcat, post)
+    i = sortperm(mean(eachcol(p)))
+    x = collect(eachrow(p))[i]
+
+    for (i, v) in enumerate(x)
+        density!(ax, v, offset = -i/4, color = (:slategray, 0.4), bandwidth = 0.2)
+    end
+
+    ax
+end
+
+function ridgeplot(post) 
+    fig = Figure()
+    ax = Axis(fig[1,1])
+    ridgeplot!(ax, post)
+    fig
+end
+
+function errorplot!(ax, post; sort=true)
+    p = reduce(hcat, post)
+    i = sort ? sortperm(mean(eachcol(p))) : axes(p, 2)
+    x = collect(eachrow(p))[i]
+
+    m = mean.(x)
+    s = std.(x)
+
+    errorbars!(ax, eachindex(m), m, s; orientation=:y, color=(:grey50, .5))
+    scatter!(ax, eachindex(m), m, color=(:grey30, .5), markersize=6)
+
+    ax
+end
+
+function errorplot(post) 
+    fig = Figure()
+    ax = Axis(fig[1,1])
+    errorplot!(ax, post)
+	fig
+end
+
 function plot_posterior(problem::BinomialGroupsModel, post::DynamicHMCPosterior)
 	fig = Figure(resolution=(800, 900))
 	

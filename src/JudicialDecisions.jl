@@ -37,6 +37,7 @@ include("decisionmodels.jl")
 
 include("models/binomial_groups_model.jl")
 include("models/mixed_membership_model.jl")
+include("models/multi_mixed_membership_model.jl")
 
 include("visualization.jl")
 
@@ -49,12 +50,12 @@ export cpc2int
 export DataSource, BPatG
 
 # plotting
-export plot_posterior
+export plot_posterior, errorplot!, errorplot, ridgeplot!, ridgeplot
 
 # bayesian modeling
 export transformation, sample, paramnames, predict, stats
 export DynamicHMCPosterior
 
-export BinomialGroupsModel, MixedMembershipModel
+export BinomialGroupsModel, MixedMembershipModel, MultiMixedMembershipModel
 
 end

@@ -52,7 +52,7 @@ Sample from the posterior distribution of `problem` with the sampling
 algorithm specified by the first argument, taking `iter` samples.
 If the first argument is omitted, NUTS via `DynamicHMC`` is used by default.
 """
-function sample(::NUTS, problem, iter; backend=:ForwardDiff)
+function sample(::NUTS, problem::AbstractDecisionModel, iter::Integer; backend=:ForwardDiff)
     t = transformation(problem)
     ℓ = TransformedLogDensity(t, problem)
     ∇ℓ = if backend == :ForwardDiff

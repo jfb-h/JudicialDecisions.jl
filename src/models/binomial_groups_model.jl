@@ -3,7 +3,7 @@
 
 Simple hierarchical binomial model predicting the probability of annullment by a grouping variable (e.g., senate or year).
 """
-struct BinomialGroupsModel{T}
+struct BinomialGroupsModel{T} <: AbstractDecisionModel
     ys::Vector{Int}
     ns::Vector{Int}
     group::Vector{T}

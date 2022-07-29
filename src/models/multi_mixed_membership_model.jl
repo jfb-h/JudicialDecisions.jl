@@ -43,6 +43,7 @@ function (problem::MultiMixedMembershipModel)(θ)
         @views logpdf(Bernoulli(logistic(α + sum(x->x*σj, zj[j]) / nj + sum(x->x*σt, zt[t]) / nt)), y) 
         for (y, j, t, nj, nt) in zip(ys, js, ts, njs, nts)
     )
+    
     logpri = logpdf(MvNormal(J, 1), zj) + 
              logpdf(MvNormal(T, 1), zt) + 
              logpdf(Normal(0, 1.5), α) + 

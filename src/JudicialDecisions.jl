@@ -38,6 +38,7 @@ include("decisionmodels.jl")
 include("models/binomial_groups_model.jl")
 include("models/mixed_membership_model.jl")
 include("models/multi_mixed_membership_model.jl")
+include("models/multi_mixed_membership_time_model.jl")
 
 include("visualization.jl")
 
@@ -56,6 +57,7 @@ export plot_posterior, errorplot!, errorplot, ridgeplot!, ridgeplot
 export transformation, sample, paramnames, predict, stats
 export DynamicHMCPosterior
 
-export BinomialGroupsModel, MixedMembershipModel, MultiMixedMembershipModel
+export BinomialGroupsModel, MixedMembershipModel 
+export MultiMixedMembershipModel, MultiMixedMembershipTimeModel
 
 end

@@ -192,9 +192,6 @@ md"""
 # ╔═╡ 62c5e953-ad7d-4c3a-bd79-b10a9ab294a3
 problem_both = MultiMixedMembershipModel(decisions)
 
-# ╔═╡ f3fa9c85-d4c8-4955-b9cd-7dca55a0aa8a
-Revise.retry()
-
 # ╔═╡ 7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 md"""
 # Setup
@@ -237,7 +234,6 @@ md"""
 # ╠═b3bfb358-1291-4c9e-ab6c-226e59c9b3bf
 # ╟─6ac97812-d92b-4e3f-a217-5c29449e9372
 # ╠═62c5e953-ad7d-4c3a-bd79-b10a9ab294a3
-# ╠═f3fa9c85-d4c8-4955-b9cd-7dca55a0aa8a
 # ╟─7af291e2-da0f-4dab-bd69-9fb375ab3b6f
 # ╠═1f7ea756-23ad-4b69-bba3-2fa15c16ae35
 # ╠═23cde6f0-066a-11ed-3a4c-037299b48733

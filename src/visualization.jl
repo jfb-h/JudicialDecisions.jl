@@ -1,3 +1,35 @@
+
+function theme_R()
+    Theme(
+        textcolor = :gray50,
+        Axis = (
+            backgroundcolor = :transparent,
+            xgridcolor = (:black, 0.07),
+            ygridcolor = (:black, 0.07),
+            leftspinevisible = true,
+            rightspinevisible = false,
+            bottomspinevisible = true,
+            topspinevisible = false,
+            xtrimspine = false,
+            ytrimspine = false,
+            spinewidth = 0.5,
+            xminorticksvisible = false,
+            yminorticksvisible = false,
+            xticksvisible = true,
+            yticksvisible = true,
+            xlabelpadding = 3,
+            ylabelpadding = 3
+        ),
+        Legend = (
+            framevisible = false,
+            padding = (0, 0, 0, 0),
+        ),
+    )
+end
+
+set_theme!(theme_R())
+
+
 function ridgeplot!(ax, post)
     p = reduce(hcat, post)
     i = sortperm(mean(eachcol(p)))
@@ -19,7 +51,7 @@ end
 
 function errorplot!(ax, post; sort=true)
     p = reduce(hcat, post)
-    i = sort ? sortperm(mean(eachcol(p))) : axes(p, 2)
+    i = sort ? sortperm(mean(eachcol(p))) : axes(p, 1)
     x = collect(eachrow(p))[i]
 
     m = mean.(x)
@@ -31,10 +63,10 @@ function errorplot!(ax, post; sort=true)
     ax
 end
 
-function errorplot(post) 
+function errorplot(post; sort=true) 
     fig = Figure()
     ax = Axis(fig[1,1])
-    errorplot!(ax, post)
+    errorplot!(ax, post; sort)
 	fig
 end
 

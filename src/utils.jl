@@ -56,5 +56,6 @@ function cpc2int(decisions, levelfun)
 	ts = (levelfun ∘ patent).(decisions)
     tref = sort(unique(reduce(vcat, ts)))
     ts_int = map(t -> map(i -> findfirst(==(i), tref), t), ts)
+    ts_int = convert(Vector{Vector{Int}}, ts_int)
 	ts_int, tref
 end	

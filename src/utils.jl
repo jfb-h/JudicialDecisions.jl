@@ -19,7 +19,13 @@ function loaddata(::BPatG, jsonfile::AbstractString)
     json = JSON3.read(read(jsonfile), jsonlines=true)
 
     #TODO: Better missing handling
-    json = filter(j -> j.outcome != "other", json)
+    json = filter(json) do j
+        j.outcome != "other" &&
+        Date(2000) <= Date(j.date) <= Date(2021) &&
+        length(j.judges) == 5 &&
+        !isnothing(j.patent.cpc) &&
+        length(filter(!isnothing, j.patent.cpc)) > 0
+    end
 
     judgepool = mapreduce(j -> j.judges, unique ∘ vcat, json)
     judgepool = Dictionary(sort(judgepool), 1:length(judgepool))
@@ -59,3 +65,19 @@ function cpc2int(decisions, levelfun)
     ts_int = convert(Vector{Vector{Int}}, ts_int)
 	ts_int, tref
 end	
+
+function predict_groups(pred, groups)
+    p = reduce(hcat, pred)
+    rows = collect(eachrow(p))
+    guni = sort!(unique(reduce(vcat, groups)))
+    StructArray(map(guni) do g
+        i = findall(x -> g in x, groups)
+        s = mean(rows[i])
+        (mean=mean(s), sd=std(s))
+    end)
+end
+
+function predict_groups(problem::AbstractDecisionModel, post::AbstractPosterior, groups)
+    predict_groupmean(predict(problem, post), groups)
+end
+

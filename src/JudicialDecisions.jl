@@ -32,13 +32,14 @@ using StatsBase: countmap
 using CairoMakie; set_theme!(theme_light())
 
 include("datamodel.jl")
-include("utils.jl")
 include("decisionmodels.jl")
+include("utils.jl")
 
 include("models/binomial_groups_model.jl")
 include("models/mixed_membership_model.jl")
 include("models/multi_mixed_membership_model.jl")
 include("models/multi_mixed_membership_time_model.jl")
+include("models/multi_mixed_membership_chairman_model.jl")
 
 include("visualization.jl")
 
@@ -54,10 +55,10 @@ export DataSource, BPatG
 export plot_posterior, errorplot!, errorplot, ridgeplot!, ridgeplot
 
 # bayesian modeling
-export transformation, sample, paramnames, predict, stats
+export transformation, sample, paramnames, predict, stats, predict_groups
 export DynamicHMCPosterior
 
 export BinomialGroupsModel, MixedMembershipModel 
-export MultiMixedMembershipModel, MultiMixedMembershipTimeModel
+export MultiMixedMembershipModel, MultiMixedMembershipTimeModel, MultiMixedMembershipChairmanModel
 
 end

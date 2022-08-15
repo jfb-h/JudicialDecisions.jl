@@ -63,6 +63,20 @@ function errorplot!(ax, post; sort=true)
     ax
 end
 
+function errorplot!(ax, s::StructArray; sort=true)
+    s = sort ? sort!(copy(s)) : s
+    errorbars!(ax, eachindex(s), s.mean, s.sd; orientation=:y, color=(:grey50, .5))
+    scatter!(ax, eachindex(s), s.mean, color=(:grey30, .5), markersize=6)
+    ax
+end
+
+function errorplot!(ax, xs, s::StructArray; sort=true)
+    s = sort ? sort!(copy(s)) : s
+    errorbars!(ax, xs, s.mean, s.sd; orientation=:y, color=(:grey50, .5))
+    scatter!(ax, xs, s.mean, color=(:grey30, .5), markersize=6)
+    ax
+end
+
 function errorplot(post; sort=true) 
     fig = Figure()
     ax = Axis(fig[1,1])

@@ -97,6 +97,7 @@ outcome(x::Decision) = x.outcome
 patent(x::Decision) = x.patent
 senate(x::Decision) = x.senate
 judges(x::Decision) = x.judges
+chairman(x::Decision) = first(judges(x))
 date(x::Decision) = x.date
 
 Base.show(io::IO, d::Decision) = print(io, label(d))
